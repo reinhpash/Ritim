@@ -7,7 +7,6 @@ using Melanchall.DryWetMidi.MusicTheory;
 
 public class NoteSpawner : MonoBehaviour
 {
-    public Conductor currentConductor;
     public GameObject spawnObject;
     public float spawnHeight = 7f;
     public static MidiFile midiFile;

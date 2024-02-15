@@ -4,16 +4,52 @@ using UnityEngine;
 
 public class AudioSyncer : MonoBehaviour
 {
-    public AudioSource master;
-    public AudioSource slave;
+    public float bias;
+    public float timeStep;
+    public float timeToBeat;
+    public float restSmoothTime;
 
-    void Update()
+    private float m_previousAudioValue;
+    private float m_audioValue;
+    private float m_timer;
+
+    protected bool m_isBeat;
+
+    private void Update()
     {
-        UpdateSyncAudio();
+        OnUpdate();
     }
 
-    private void UpdateSyncAudio()
+    public virtual void OnUpdate()
     {
-        slave.timeSamples = master.timeSamples;
+        // update audio value
+        m_previousAudioValue = m_audioValue;
+        m_audioValue = AudioSpecturm.spectrumValue;
+
+        // if audio value went below the bias during this frame
+        if (m_previousAudioValue > bias &&
+            m_audioValue <= bias)
+        {
+            // if minimum beat interval is reached
+            if (m_timer > timeStep)
+                OnBeat();
+        }
+
+        // if audio value went above the bias during this frame
+        if (m_previousAudioValue <= bias &&
+            m_audioValue > bias)
+        {
+            // if minimum beat interval is reached
+            if (m_timer > timeStep)
+                OnBeat();
+        }
+
+        m_timer += Time.deltaTime;
+    }
+
+    public virtual void OnBeat()
+    {
+        m_timer = 0;
+        m_isBeat = true;
     }
 }

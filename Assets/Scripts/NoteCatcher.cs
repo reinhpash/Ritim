@@ -73,7 +73,6 @@ public class NoteCatcher : MonoBehaviour
     }
     private void Hit(FallingNotes obj)
     {
-        Debug.Log("HIT");
         var a = Instantiate(scoreTextPrefab, catcherUI);
         a.GetComponent<UIMover>().Init("+200");
         a.GetComponent<UIMover>().StartMove();
