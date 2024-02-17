@@ -4,6 +4,7 @@ using Melanchall.DryWetMidi.Interaction;
 using System.Collections.Generic;
 using System.Collections;
 using Melanchall.DryWetMidi.MusicTheory;
+using TMPro;
 
 public class NoteSpawner : MonoBehaviour
 {
@@ -17,12 +18,28 @@ public class NoteSpawner : MonoBehaviour
     List<FallingNotes> notes = new List<FallingNotes>();
     int spawnIndex = 0;
     public float songDelayInSeconds;
+    public TextMeshProUGUI counterText;
+    public GameObject counterUI;
+    public bool isGameStart;
 
 
     void Start()
     {
         ReadFromFile();
+        StartCoroutine(CountDown());
     }
+
+    IEnumerator CountDown()
+    {
+        counterText.text = "3";
+        yield return new WaitForSeconds(1f);
+        counterText.text = "2";
+        yield return new WaitForSeconds(1f);
+        counterText.text = "1";
+        yield return new WaitForSeconds(1f);
+        counterUI.SetActive(false);
+    }
+
     private void Update()
     {
         if (spawnIndex < timeStamps.Count)
@@ -52,6 +69,7 @@ public class NoteSpawner : MonoBehaviour
     public void StartSong()
     {
         GameManager.Instance.audioSource.Play();
+        isGameStart = true;
     }
 
     private void ReadFromFile()

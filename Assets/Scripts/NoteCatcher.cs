@@ -2,9 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
-using System;
-using Unity.VisualScripting;
-using System.Linq;
+
 
 public class NoteCatcher : MonoBehaviour
 {
@@ -13,11 +11,12 @@ public class NoteCatcher : MonoBehaviour
     public KeyCode buttonKey;
     public MeshRenderer currentRenderer;
     private Material currentMat;
-    [ColorUsage(true,true)]public Color activeColor;
+    [ColorUsage(true, true)] public Color activeColor;
     [ColorUsage(true, true)] public Color deactiveColor;
     public Transform catcherUI;
     public GameObject scoreTextPrefab;
-    List<FallingNotes> fallingNotes = new List<FallingNotes>();
+    public Vector3 halfsize = new Vector3(.1f, .1f, .1f);
+
     private void Start()
     {
         currentMat = currentRenderer.material;
@@ -29,7 +28,6 @@ public class NoteCatcher : MonoBehaviour
     {
         if (other.TryGetComponent<FallingNotes>(out FallingNotes note))
         {
-            fallingNotes.Add(note);
             note.isClickable = true;
         }
     }
@@ -38,16 +36,7 @@ public class NoteCatcher : MonoBehaviour
     {
         if (other.TryGetComponent<FallingNotes>(out FallingNotes note))
         {
-            RemoveNote(note);
-        }
-    }
-
-    public void RemoveNote(FallingNotes note)
-    {
-        if (fallingNotes.Contains(note))
-        {
-            fallingNotes.Remove(note);
-            fallingNotes = fallingNotes.Where(x => x != null).ToList();
+            note.isClickable = false;
         }
     }
 
@@ -56,28 +45,25 @@ public class NoteCatcher : MonoBehaviour
         currentMat.color = Color.Lerp(currentMat.color, deactiveColor, 5 * Time.deltaTime);
         if (Input.GetKeyDown(buttonKey))
         {
-            var a = fallingNotes.Where(x => x != null).ToList();
             this.transform.DOShakeScale(.15f);
-            if (fallingNotes.Count > 0)
+            Collider[] colliders = Physics.OverlapBox(transform.position, halfsize, Quaternion.identity);
+            foreach (var collider in colliders)
             {
-                for (int i = 0; i < a.Count; i++)
+                FallingNotes fallingNote = collider.GetComponent<FallingNotes>();
+                if (fallingNote != null && fallingNote.isClickable)
                 {
-                    if (fallingNotes[i] == null)
-                        return;
-
-                    if (fallingNotes[i].isClickable)
-                        Hit(fallingNotes[i].GetComponent<FallingNotes>());
+                    Hit(fallingNote);
                 }
             }
         }
     }
+
     private void Hit(FallingNotes obj)
     {
         var a = Instantiate(scoreTextPrefab, catcherUI);
         a.GetComponent<UIMover>().Init("+200");
         a.GetComponent<UIMover>().StartMove();
         GameManager.Instance.ScoreManager.UpdateScore(obj.value);
-        GameManager.Instance.RemoveNoteFromLists(obj);
         obj.canInteract = false;
         obj.gameObject.SetActive(false);
         Destroy(obj.gameObject, 1.1f);
@@ -88,4 +74,11 @@ public class NoteCatcher : MonoBehaviour
         currentMat.color = activeColor;
     }
 
+    private void OnDrawGizmos()
+    {
+        Bounds bounds = new Bounds(transform.position, halfsize * 2);
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireCube(transform.position, bounds.size);
+    }
 }

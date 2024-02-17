@@ -29,7 +29,6 @@ public class FallingNotes : MonoBehaviour
         tr.material.color = initialColor;
         timeInstantiated = GameManager.Instance.GetAudioSourceTime();
         timeInstantiated = assignedTime - GameManager.Instance.noteTime;
-
     }
 
 
@@ -41,7 +40,6 @@ public class FallingNotes : MonoBehaviour
 
         if (t > 1.1f)
         {
-            GameManager.Instance.RemoveNoteFromLists(this);
             Destroy(gameObject);
             var a = Instantiate(scoreTextPrefab, GameManager.Instance.ScoreManager.GameCanvas.transform);
             Vector3 screenPos = Camera.main.WorldToScreenPoint(this.transform.position);
