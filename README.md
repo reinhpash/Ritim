@@ -12,6 +12,8 @@ Additionally, there is a "Conductor" class created to make objects react to the 
 
 I'm sharing this project, developed for Ritim Jam 2024, as open-source here.
 
+Itch.io => https://aeterponis.itch.io/ritim
+
 ## Features
 
 - Game spawn objects according to the MIDI file.
