@@ -24,6 +24,8 @@ Itch.io => https://aeterponis.itch.io/ritim
 
 - [@melenchall](https://github.com/melanchall) Drywetmidi.
 - [@SkyriftStudios](https://www.youtube.com/@SkyriftStudios) Guidance about rhythm games.
+- "Polygon city" from synty for characters
+- DJ booth from David Henson => [Sketchfab](https://sketchfab.com/3d-models/dj5000-00615da2444f437da7efa342c05be7ff)
 
   
 ## Screenshots
